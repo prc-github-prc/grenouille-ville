@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>grenouille-ville</title>
+    <link rel="stylesheet" href="game.css">
+</head>
+    <body>
+        <p id="news">News</p>
+        <p id="stats">Stats</p>
+        <br>
+        <div id="main-area">
+            <p id = "choix">0</p>
+            <br>
+            <button class ="button" id = "fermer" onclick="fermer()">fermer une route</button>
+            <br>
+            <br>
+            <button class ="button" id = "ouvrir" onclick="ouvrir()">ouvrir une route</button>
+            <br>
+            <br>
+            <br>
+            <br>
+            <button class ="button" id = "valider" onclick="prochains_6_mois()">commencer</button>
+            <br>
+            <br>    
+        </div>
+
+        <script>
+
+            function randint(min, max) {
+                min = Math.ceil(min);
+                max = Math.floor(max);
+                return Math.floor(Math.random() * (max - min)) + min;
+            }
+
+            var nb_mois = -6; /*Le nombre de mois écoulés depuis le début*/
+            var prochaine_élection = 12; /*Sert de compteur avant chaque élection*/
+            var nb_grenouilles = 450; /*La quantité de grenouilles existantes*/
+            var intention_de_vote = 70; /*Le pourcentage d'intention de vote de la population*/
+            var routes = [7,3]; /*La première case correspond aux routes ouvertes, la deuxième aux routes fermées*/
+            var choix = 0; /*Sert à stocker à chaque tour le choix effectué par le joueur*/
+            var coeff_de_changement = 1; /*Coefficient changeant amené à modifier l'évolution des grenouilles et des intentions de vote lors de la partie*/
+            var liste_news = [
+                "Le Crapaud Enchainé : Selon une étude du CNRS, la dérive génétique est d'autant plus importante que la population de l'éspèce est petite. Et ne parlons même pas des dérives sectaires !",
+                "Crapaud Hebdo : Lamballe-Armor, la 'route des grenouilles' (RD 28) a été définitivement fermée. Nos confrères de BFMTGV nous assurent que sur place, la colère des habitants ne descend pas.",
+                "L'Amphibien : Selon le philosophe Alain Téléctuel : 'la dérive génétique n'est pas si mauvaise pour l'éspèce !'. Ces propos sont à considérer dans le contexte de la situation géopolitique de la commune de la Poterie déjà fort compliquée.",
+                "CrapaudNews : Des élèves du lycée Henri-Avril de Lamballe auraient été forcé de réaliser un projet de propagande à propos de la protection des grenouilles dans le cadre de leur enseignement scientifique.",
+                "BFMTGV : Le fameux logiciel de modélisation Edu'modèle utilisé dans les lycées accusé par le parquet bien ciré d'être le cheval de troie de la propagande de la bien-pensance anti-spéciste."
+            ]; /*Les nouvelles qui n'influencent pas le déroulement de la partie*/
+
+            var mauvaises_nouvelles = [
+                "Courrier Amphibie : dans la commune de Grenouilleville, malgrès la fermeture de la route, un automobiliste passe et écrase de nombreuses grenouilles et crapauds.",
+                "Le Figagros : Dans la commune de Grenouilleville des violences auraient eu lieu entre habitants et militants écologistes.",
+                "Maisdiapart : Le(La) maire de Grenouilleville aurait touché des pots de vin de la part de politiques affiliés à des mouvement radicaux écologistes.",
+                "@pasdutoutfake sur trwitton : ce soir sur Arte l'interview exclusive d'un crapaud hors du commun qui dénonce l'inaction du maire de Grenouilleville. #crapaud #touchepasàmontriton #véridique.",
+                "Les Grenouilles rockeuses : le groupe de Death Metal Technique Français écologiste Gojira a décidé d'annuler son concert à Grenouilleville. De nombreux amphibiens sont morts de chagrin."
+            ]; /*Les nouvelles qui influencent le déroulement de la partie*/
+
+            var coûts_mauvaises_nouvelles = [[1,0],[2,2],[0,3],[1,1],[5,-2]]; /*Les différents coûts des mauvaises nouvelles sur les grenouilles et les intentions de vote*/
+
+            function fermer(){ 
+                /*Cette fonction permet à l'utilisateur de choisir de fermer une route*/
+                choix = -1;
+                var change_choix = document.getElementById('choix')
+                change_choix.innerText = (choix);
+            }
+
+            function ouvrir(){
+                /*Cette fonction permet à l'utilisateur de choisir d'ouvrir une route*/
+                choix = 1;
+                var change_choix = document.getElementById('choix')
+                change_choix.innerText = (choix);
+            }
+
+            function compute(){
+                /*
+                Cette fonction met à jour les grenouilles et les intentions de votes
+                */
+
+                if (choix == 1){
+                    if (routes[0] == 10){
+                        return "error" /*Erreur si l'utilisateur ouvre une route alors qu'elles sont déjà toutes ouvertes*/
+                    }
+                    routes[0] += 1;
+                    routes[1] -= 1;
+                    nb_grenouilles -= 150 * coeff_de_changement; /*diminution des grenouilles*/
+                    intention_de_vote += 10 * coeff_de_changement; /*hausse des intentions de vote*/
+                }else{
+                    if (routes[1] == 10){
+                        return "error" /*Erreur si l'utilisateur ferme une route alors qu'elles sont déjà toutes fermées*/
+                    }
+                    routes[0] -= 1;
+                    routes[1] += 1;
+                    nb_grenouilles += 150 * coeff_de_changement; /*hausse du nb de grenouilles*/
+                    intention_de_vote -= 10 * coeff_de_changement; /*baisse des intentions de vote*/
+                }
+                nb_grenouilles = Math.floor(nb_grenouilles * 1.01); /*Augmentation naturelle (reproduction) puis arrondi à l'entier*/
+                intention_de_vote = Math.floor(intention_de_vote); /*Arrondi à l'entier*/
+
+                if (nb_grenouilles <= 150){ /*Si la population de grenouille tombe en dessous des 150, le joueur a perdu*/
+                    return false
+                }
+                return true
+            }
+
+            function prochains_6_mois(){
+                /*Cette fonction, executée par le joeur suite à l'appuie sur le bouton, mets à jour les grenouilles, les intentions de vote, les autres stats ainsi que les news*/
+                if (nb_mois == -6) { /*début de partie*/
+                    var start = document.getElementById("valider");
+                    start.innerText = ("valider");
+
+                }else{
+                    if (choix == 0){ /*Si le joueur a valider sans choisir*/
+                        alert("il faut faire un choix")
+                        return
+                    }
+
+                    a = compute(); /*on calcule*/
+                    if (a == false){ /*Si le joueur a exterminé les grenouilles*/
+                        while (true){
+                            alert("Votre action a exterminée les grenouilles. Des militants écologistes ont lancé une révolution qui vous coûte votre poste !")
+                        }
+                    }else if (a == "error"){ /*Si le joueur a effectué un choix impossible*/
+                        alert("choix impossible")
+                        return
+                    }
+                }
+                var change_news = document.getElementById("news");
+                if (randint(1,3) == 2){
+                    var random_news = liste_news[randint(0,liste_news.length)]; /*Nouvelle sans incidence*/
+                }else{ /*Nouvelle avec incidence*/
+                    var random_number = randint(0,mauvaises_nouvelles.length);
+                    nb_grenouilles -= coûts_mauvaises_nouvelles[random_number][0] * coeff_de_changement;
+                    intention_de_vote -= coûts_mauvaises_nouvelles[random_number][1] * coeff_de_changement;
+                    random_news = mauvaises_nouvelles[random_number]
+                }
+                change_news.innerText = ("News : " + random_news); /*mise à jour*/
+
+                nb_mois += 6; /*augmentation du nb de mois*/
+                coeff_de_changement += randint(-2,3)/10; /*modification aléatoire du coeff*/
+
+                intention_de_vote = intention_de_vote % 100; /*L'intention de vote doit rester entre 0 et 100*/
+
+                nb_grenouilles = Math.floor(nb_grenouilles);
+                intention_de_vote = Math.floor(intention_de_vote);
+
+                /*mise à jour de l'affichage des différents statistiques*/
+                var stats = "Stats : " + " mois = " + nb_mois + "  |   routes fermées = " + routes[1] + "/10" + "   |   grenouilles = " + nb_grenouilles + "   |   intentions de vote = " + intention_de_vote + "%   |   tours avant prochaine élection = " + prochaine_élection;
+
+                var change_stats = document.getElementById("stats");
+                change_stats.innerText = (stats);
+
+                var change_choix = document.getElementById("choix");
+                change_choix.innerText = (0);
+                choix = 0; /*Réinitialisation du choix du joueur*/
+                prochaine_élection -= 1; /*La prochaine élection se rapproche d'un tour*/
+
+                if (prochaine_élection == -1){ /*élection*/
+                    prochaine_élection = 12; /*réinitialisation compteur*/
+                    if (intention_de_vote >= 60){ /*Si le joueur remporte plus de 60 % des voix (c'est la règle à Grenouilleville)*/
+                        alert("Bravo, vous avez remporté l'élection municipale de Grenouilleville, vous restez au pouvoir encore 6 ans !");
+                        var stats = "Stats : " + " mois = " + nb_mois + "  |   routes fermées = " + routes[1] + "/10" + "   |   grenouilles = " + nb_grenouilles + "   |   intentions de vote = " + intention_de_vote + "%   |   tours avant prochaine élection = " + prochaine_élection;
+                        var change_stats = document.getElementById("stats");
+                        change_stats.innerText = (stats);
+                    }else{
+                        while (true){ /*Si le joueur a perdu l'élection*/
+                            alert("Hélas pour vous, les électeurs de Grenouilleville ont choisi un nouveau maire plus à même de prendre soin d'eux que vous.");
+                        }
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,32 @@
+* {
+    background-color:green;
+    text-align:left;
+    font-size :30px;
+}
+
+#news {
+    display: block;
+    border:4px solid black;
+    background-color: white;
+    height: 70px;
+}
+
+#stats {
+    border:4px solid black;
+    background-color: white;
+}
+
+#main-area {
+    border:4px solid black;
+    background-color: white;
+    text-align:center;
+}
+
+button {
+    background-color:grey;
+}
+
+#choix {
+    background-color: white;
+    text-align: center;
+}
