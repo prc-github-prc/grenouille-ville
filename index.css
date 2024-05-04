@@ -1,13 +1,24 @@
 * {
-    background-color: #005000;
+    background-color: #a4be5c;
     text-align: center;
 }
 
 h1 {
-    color:red;
+    color:rgb(255, 255, 255);
+    font-family: sans-serif;
 }
 
-img {
-    width: 400px;
-    height: 400px;
+h2 {
+    color:rgb(255, 255, 255);
+    font-family: sans-serif;
+}
+
+h3 {
+    color:rgb(255, 255, 255);
+    font-family: sans-serif;
+}
+
+p {
+    color:rgb(255, 255, 255);
+    font-family: sans-serif;
 }
