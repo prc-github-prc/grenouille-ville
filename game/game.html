@@ -112,7 +112,8 @@
                     a = compute(); /*on calcule*/
                     if (a == false){ /*Si le joueur a exterminé les grenouilles*/
                         while (true){
-                            alert("Votre action a exterminée les grenouilles. Des militants écologistes ont lancé une révolution qui vous coûte votre poste !")
+                            alert("Votre action a exterminée les grenouilles. Des militants écologistes ont lancé une révolution qui vous coûte votre poste !");
+                            document.location.href="https://prc-github-prc.github.io/grenouille-ville/";
                         }
                     }else if (a == "error"){ /*Si le joueur a effectué un choix impossible*/
                         alert("choix impossible")
@@ -159,6 +160,7 @@
                     }else{
                         while (true){ /*Si le joueur a perdu l'élection*/
                             alert("Hélas pour vous, les électeurs de Grenouilleville ont choisi un nouveau maire plus à même de prendre soin d'eux que vous.");
+                            document.location.href="https://prc-github-prc.github.io/grenouille-ville/";
                         }
                     }
                 }
